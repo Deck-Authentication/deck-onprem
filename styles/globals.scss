@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+
+* {
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+.defined-card {
+  @apply rounded-lg p-2 flex flex-col justify-center;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.pill-btn {
+  @apply flex flex-row items-center rounded-full text-white p-2 hover:opacity-80;
+}
+
+.rounded-btn {
+  @apply rounded-lg border py-1 px-3 hover:shadow-lg;
+}
+
+.rounded-btn-disabled {
+  @apply rounded-lg border py-1 px-3 cursor-not-allowed opacity-60 text-white;
+}
+
+.defined-badge {
+  @apply rounded-full text-xs font-bold uppercase tracking-wide;
+}
+
+// Daisy UI overrides
+.btn-disabled {
+  @apply text-white cursor-not-allowed;
+}
+
+.tab {
+  @apply text-2xl text-gray-600;
+}
+
+.tab-active {
+  border-color: green !important;
+  color: green;
+}
