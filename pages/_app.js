@@ -1,27 +1,24 @@
-import AppWrapper from "../context"
 import Layout from "../components/layout"
 import "../styles/globals.scss"
-import { UserProvider } from "@auth0/nextjs-auth0"
+import { SessionProvider } from "next-auth/react"
 import Head from "next/head"
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    <UserProvider>
-      <AppWrapper>
-        <Head>
-          <title>Deck</title>
-          <meta name="title" content="Deck Admin Dashboard" />
-          <meta
-            name="description"
-            content="Deck Admin Dashboard for https://withdeck.com- an application to help you invite teammates into multiple cloud applications in one click"
-          />
-          <link rel="icon" href="/deck.ico" />
-        </Head>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </AppWrapper>
-    </UserProvider>
+    <SessionProvider session={session}>
+      <Head>
+        <title>Deck</title>
+        <meta name="title" content="Deck Admin Dashboard" />
+        <meta
+          name="description"
+          content="Deck Admin Dashboard for https://withdeck.com- an application to help you invite teammates into multiple cloud applications in one click"
+        />
+        <link rel="icon" href="/deck.ico" />
+      </Head>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </SessionProvider>
   )
 }
 

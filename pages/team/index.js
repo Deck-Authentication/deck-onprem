@@ -7,9 +7,9 @@ import { toast } from "react-toastify"
 import { toastOption } from "../../constants"
 import { useSWRConfig } from "swr"
 
-export default function Teams({ BACKEND_URL }) {
-  const { teams, teamsLoadError } = useGithubTeams(`${BACKEND_URL}/github/team/list-all`)
-  const { admin, loadAdminError } = useAdminData(`${BACKEND_URL}/admin/get-all-data`)
+export default function Teams() {
+  const { teams, teamsLoadError } = useGithubTeams(`api/github/team/list-all`)
+  const { admin, loadAdminError } = useAdminData(`api/admin/get-all-data`)
   const [isCreatingTeam, setIsCreatingTeam] = useState(false)
   const [isDeletingTeam, setIsDeletingTeam] = useState(false)
   const { mutate } = useSWRConfig()
@@ -19,7 +19,7 @@ export default function Teams({ BACKEND_URL }) {
   const handleCreateTeam = async (newTeamName) => {
     // disable the create team button while creating team
     setIsCreatingTeam(true)
-    const newTeam = await createNewTeam(`${BACKEND_URL}/github/team/create`, newTeamName)
+    const newTeam = await createNewTeam(`api/github/team/create`, newTeamName)
     setIsCreatingTeam(false)
     // redirect users to the new team page
     router.push(`${router.asPath}/${newTeam.slug}`)
@@ -27,9 +27,9 @@ export default function Teams({ BACKEND_URL }) {
 
   const handleDeleteTeam = async (team) => {
     setIsDeletingTeam(true)
-    await deleteTeam(`${BACKEND_URL}/github/team/delete`, team.slug)
+    await deleteTeam(`api/github/team/delete`, team.slug)
     // refetch the updated list of teams
-    mutate(`${BACKEND_URL}/github/team/list-all`)
+    mutate(`api/github/team/list-all`)
     setIsDeletingTeam(false)
     toast.success(`Team ${team.name} deleted successfully`, toastOption)
   }
@@ -58,7 +58,7 @@ export default function Teams({ BACKEND_URL }) {
               cardKey={loopId}
               key={`${team.id}-${loopId}`}
               team={team}
-              BACKEND_URL={BACKEND_URL}
+              BACKEND_URL={"api"}
               href={`${router.asPath}/${team.slug}`}
               handleDeleteTeam={handleDeleteTeam}
             />
@@ -89,12 +89,4 @@ export default function Teams({ BACKEND_URL }) {
       )}
     </div>
   )
-}
-
-export async function getStaticProps() {
-  const BACKEND_URL = process.env.BACKEND_URL
-
-  return {
-    props: { BACKEND_URL },
-  }
 }
