@@ -1,9 +1,9 @@
 import { useGithubOrgActivities } from "../utils"
 import { useAdminData } from "../utils"
 
-export default function Activity({ BACKEND_URL }) {
-  const { admin, loadAdminError } = useAdminData(`${BACKEND_URL}/admin/get-all-data`)
-  const { activities, loadActivitiesError } = useGithubOrgActivities(`${BACKEND_URL}/github/list-activities?perPage=100`)
+export default function Activity() {
+  const { admin, loadAdminError } = useAdminData(`api/admin/get-all-data`)
+  const { activities, loadActivitiesError } = useGithubOrgActivities(`api/github/list-activities?perPage=100`)
 
   if (loadAdminError)
     return (
@@ -94,12 +94,4 @@ function LogMessage({ activity }) {
       {actionSubject} the {destination()} {team ? "team" : "organization"}| Time: {unixTimestampToDate(created_at)}
     </div>
   )
-}
-
-export async function getStaticProps() {
-  const BACKEND_URL = process.env.BACKEND_URL
-
-  return {
-    props: { BACKEND_URL },
-  }
 }

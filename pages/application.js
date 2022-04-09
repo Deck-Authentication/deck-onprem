@@ -9,8 +9,8 @@ import { useRef } from "react"
 import { toast } from "react-toastify"
 import { toastOption } from "../constants"
 
-export default function Application({ BACKEND_URL }) {
-  const { admin, loadAdminError } = useAdminData(`${BACKEND_URL}/admin/get-all-data`)
+export default function Application() {
+  const { admin, loadAdminError } = useAdminData("api/admin/get-all-data")
 
   if (loadAdminError) return <div>failed to load</div>
   if (!admin) return <div>loading...</div>
@@ -20,10 +20,10 @@ export default function Application({ BACKEND_URL }) {
   const handleSave = async (newApiKey, newOrganization) => {
     // Only fetch new data as members and teams from github if the organization field has changed
     const shouldGithubDataUpdate = newOrganization !== github.organization
-    await Promise.all([saveGithubCredentials(`${BACKEND_URL}/github/save-credentials`, newApiKey, newOrganization)])
+    await Promise.all([saveGithubCredentials("api/github/save-credentials", newApiKey, newOrganization)])
       .then(async () => {
         if (shouldGithubDataUpdate)
-          await importNewData(`${BACKEND_URL}/github/import-all`).catch((err) => {
+          await importNewData("api/github/import-all").catch((err) => {
             throw new Error(err)
           })
         toast.success("Github credentials saved successfully", toastOption)
@@ -170,12 +170,4 @@ function AppSettings({ header, label, github, handleSave }) {
       </label>
     </div>
   )
-}
-
-export async function getStaticProps() {
-  const BACKEND_URL = process.env.BACKEND_URL
-
-  return {
-    props: { BACKEND_URL },
-  }
 }

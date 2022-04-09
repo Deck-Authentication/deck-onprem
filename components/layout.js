@@ -1,10 +1,21 @@
 import Menu from "./menu.js"
 import Header from "./header.js"
-import { withPageAuthRequired } from "@auth0/nextjs-auth0"
 import "react-toastify/dist/ReactToastify.css"
 import { ToastContainer } from "react-toastify"
+import { useSession, signIn } from "next-auth/react"
 
 function Layout(props) {
+  const { data: session } = useSession()
+
+  if (!session)
+    return (
+      <>
+        Not signed in
+        <br />
+        <button onClick={() => signIn()}>Sign in</button>
+      </>
+    )
+
   return (
     <div
       className="flex flex-row min-h-screen min-w-screen text-black relative"
@@ -21,4 +32,4 @@ function Layout(props) {
   )
 }
 
-export default withPageAuthRequired(Layout)
+export default Layout
