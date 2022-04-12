@@ -11,59 +11,47 @@ import { toastOption } from "../constants"
 import axios from "axios"
 
 export default function Application() {
-  // const { admin, loadAdminError } = useAdminData("api/admin/get-all-data")
-  // if (loadAdminError) return <div>failed to load</div>
-  // if (!admin) return <div>loading...</div>
-  // const { github } = admin
-  // const handleSave = async (newApiKey, newOrganization) => {
-  //   // Only fetch new data as members and teams from github if the organization field has changed
-  //   const shouldGithubDataUpdate = newOrganization !== github.organization
-  //   await Promise.all([saveGithubCredentials("api/github/save-credentials", newApiKey, newOrganization)])
-  //     .then(async () => {
-  //       if (shouldGithubDataUpdate)
-  //         await importNewData("api/github/import-all").catch((err) => {
-  //           throw new Error(err)
-  //         })
-  //       toast.success("Github credentials saved successfully", toastOption)
-  //     })
-  //     .catch((err) => {
-  //       console.error(err)
-  //       toast.error(
-  //         "Failed to save Github credentials. Contact us at peter@withdeck.com and we'll resolve this issue as soon as possible",
-  //         toastOption
-  //       )
-  //     })
-  // }
-  // return (
-  //   <div id="application" className="w-full h-full flex justify-center p-10">
-  //     <ul className="w-10/12 w-md-full flex flex-col gap-y-4">
-  //       <li className="w-full border rounded-sm border-gray-300 p-3 flex flex-row justify-between items-center">
-  //         <div className="flex flex-row items-center gap-1" title="github">
-  //           <Image src={Github_Mark} alt="Github logo" height="25" width="25" priority={true} />
-  //           <p>Github</p>
-  //         </div>
-  //         <label
-  //           htmlFor="github-modal"
-  //           className="rounded-lg py-1 px-2 border border-transparent hover:shadow-md hover:border-gray-300 cursor-pointer"
-  //           title="Setting"
-  //         >
-  //           <FontAwesomeIcon icon={faCog} width="20" height="20" />
-  //         </label>
-  //       </li>
-  //     </ul>
-  //     <AppSettings header="Github App Setting" label="github-modal" github={github} handleSave={handleSave} />
-  //   </div>
-  // )
-
-  const callBackend = async () => {
-    const response = await axios.get("/api/test")
-    alert(JSON.stringify(response))
+  const { admin, loadAdminError } = useAdminData("api/admin/get-all-data")
+  if (loadAdminError) return <div>failed to load</div>
+  if (!admin) return <div>loading...</div>
+  const { github } = admin
+  const handleSave = async (newApiKey, newOrganization) => {
+    // Only fetch new data as members and teams from github if the organization field has changed
+    const shouldGithubDataUpdate = newOrganization !== github.organization
+    await Promise.all([saveGithubCredentials("api/github/save-credentials", newApiKey, newOrganization)])
+      .then(async () => {
+        if (shouldGithubDataUpdate)
+          await importNewData("api/github/import-all").catch((err) => {
+            throw new Error(err)
+          })
+        toast.success("Github credentials saved successfully", toastOption)
+      })
+      .catch((err) => {
+        console.error(err)
+        toast.error(
+          "Failed to save Github credentials. Contact us at peter@withdeck.com and we'll resolve this issue as soon as possible",
+          toastOption
+        )
+      })
   }
-
   return (
-    <div>
-      <p>Hello</p>
-      <button onClick={(_) => callBackend()}>Click here to call a function</button>
+    <div id="application" className="w-full h-full flex justify-center p-10">
+      <ul className="w-10/12 w-md-full flex flex-col gap-y-4">
+        <li className="w-full border rounded-sm border-gray-300 p-3 flex flex-row justify-between items-center">
+          <div className="flex flex-row items-center gap-1" title="github">
+            <Image src={Github_Mark} alt="Github logo" height="25" width="25" priority={true} />
+            <p>Github</p>
+          </div>
+          <label
+            htmlFor="github-modal"
+            className="rounded-lg py-1 px-2 border border-transparent hover:shadow-md hover:border-gray-300 cursor-pointer"
+            title="Setting"
+          >
+            <FontAwesomeIcon icon={faCog} width="20" height="20" />
+          </label>
+        </li>
+      </ul>
+      <AppSettings header="Github App Setting" label="github-modal" github={github} handleSave={handleSave} />
     </div>
   )
 }
