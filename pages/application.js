@@ -8,11 +8,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik"
 import { useRef } from "react"
 import { toast } from "react-toastify"
 import { toastOption } from "../constants"
-import axios from "axios"
 
 export default function Application() {
-  const { admin, loadAdminError } = useAdminData("api/admin/get-all-data")
-  if (loadAdminError) return <div>failed to load</div>
+  const { admin, loadAdminError } = useAdminData("/api/admin/get-all-data")
+  if (loadAdminError) {
+    return <div>failed to load</div>
+  }
   if (!admin) return <div>loading...</div>
   const { github } = admin
   const handleSave = async (newApiKey, newOrganization) => {

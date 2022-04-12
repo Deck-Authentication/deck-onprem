@@ -91,7 +91,7 @@ function LogMessage({ activity }) {
       >
         {user}
       </a>{" "}
-      {actionSubject} the {destination()} {team ? "team" : "organization"}| Time: {unixTimestampToDate(created_at)}
+      {actionSubject} the {destination()} {team ? "team" : "organization"} | Time: {unixTimestampToDate(created_at)}
     </div>
   )
 }

@@ -7,6 +7,8 @@ const Admin = require("./database/admin")
 const Sentry = require("@sentry/node")
 const Tracing = require("@sentry/tracing")
 const { getSession } = require("next-auth/react")
+const NextAuth = require("next-auth")
+const GoogleProvider = require("next-auth/providers/google")
 
 Sentry.init({
   dsn: "https://7304e503172043e4b408c7e6ba33ef3e@o1200475.ingest.sentry.io/6324451",
