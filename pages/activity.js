@@ -1,5 +1,6 @@
 import { useGithubOrgActivities } from "../utils"
 import { useAdminData } from "../utils"
+import Spinner from "../components/spinner"
 
 export default function Activity() {
   const { admin, loadAdminError } = useAdminData(`/backend/admin/get-all-data`)
@@ -9,14 +10,24 @@ export default function Activity() {
     return (
       <div>Unable to load your data. Contact us at peter@withdeck.com and we will resolve this issue as soon as possible</div>
     )
-  else if (!admin) return <div>Loading...</div>
+  else if (!admin)
+    return (
+      <div className="w-full h-full grid place-content-center">
+        <Spinner />
+      </div>
+    )
 
   const { github } = admin
   if (!github?.apiKey || !github?.organization)
     return <div>You need to set up your github account first under the Application tab.</div>
 
   if (loadActivitiesError) return <div>Error loading activities</div>
-  else if (!activities) return <div>Loading activities...</div>
+  else if (!activities)
+    return (
+      <div className="w-full h-full grid place-content-center">
+        <Spinner />
+      </div>
+    )
 
   return (
     <div className="activities px-8">

@@ -8,13 +8,19 @@ import { Formik, Form, Field, ErrorMessage } from "formik"
 import { useRef } from "react"
 import { toast } from "react-toastify"
 import { toastOption } from "../constants"
+import Spinner from "../components/spinner"
 
 export default function Application() {
   const { admin, loadAdminError } = useAdminData("backend/admin/get-all-data")
   if (loadAdminError) {
     return <div>failed to load</div>
   }
-  if (!admin) return <div>loading...</div>
+  if (!admin)
+    return (
+      <div className="w-full h-full grid place-content-center">
+        <Spinner />
+      </div>
+    )
   const { github } = admin
   const handleSave = async (newApiKey, newOrganization) => {
     // Only fetch new data as members and teams from github if the organization field has changed
