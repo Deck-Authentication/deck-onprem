@@ -2,8 +2,8 @@ import { useGithubOrgActivities } from "../utils"
 import { useAdminData } from "../utils"
 
 export default function Activity() {
-  const { admin, loadAdminError } = useAdminData(`api/admin/get-all-data`)
-  const { activities, loadActivitiesError } = useGithubOrgActivities(`api/github/list-activities?perPage=100`)
+  const { admin, loadAdminError } = useAdminData(`/backend/admin/get-all-data`)
+  const { activities, loadActivitiesError } = useGithubOrgActivities(`/backend/github/list-activities?perPage=100`)
 
   if (loadAdminError)
     return (

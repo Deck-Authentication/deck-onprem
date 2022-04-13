@@ -7,8 +7,6 @@ const Admin = require("./database/admin")
 const Sentry = require("@sentry/node")
 const Tracing = require("@sentry/tracing")
 const { getSession } = require("next-auth/react")
-const NextAuth = require("next-auth")
-const GoogleProvider = require("next-auth/providers/google")
 
 Sentry.init({
   dsn: "https://7304e503172043e4b408c7e6ba33ef3e@o1200475.ingest.sentry.io/6324451",
@@ -35,7 +33,9 @@ app.get("/", (_, res) => {
 const authenticateRequest = async (req, res, next) => {
   const session = await getSession({ req })
   if (session) {
+    console.log("session: ", session)
     const email = session.user.email
+    console.log("Email = ", email)
     let admin = await Admin.findOne({ email }).catch((err) => res.status(500).json({ ok: false, message: err.message }))
     if (!admin) {
       // if the user logs in for the first time, create a collection with the email field as provided by auth0
@@ -48,7 +48,10 @@ const authenticateRequest = async (req, res, next) => {
           },
         },
         (err, newAdmin) => {
-          if (err) return res.status(500).json({ ok: false, message: err })
+          if (err) {
+            console.error("Error creating admin: ", err)
+            return res.status(500).json({ ok: false, message: err })
+          }
           admin = newAdmin
 
           res.status(200).json({ ok: true, admin })

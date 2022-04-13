@@ -3,8 +3,8 @@ import Link from "next/link"
 import { useAdminData } from "../../utils"
 
 export default function User() {
-  const { admin, loadAdminError } = useAdminData(`api/admin/get-all-data`)
-  const { members, membersLoadingError } = useGithubOrgMembers(`api/github/list-members`)
+  const { admin, loadAdminError } = useAdminData(`/backend/admin/get-all-data`)
+  const { members, membersLoadingError } = useGithubOrgMembers(`/backend/github/list-members`)
 
   if (loadAdminError)
     return (
