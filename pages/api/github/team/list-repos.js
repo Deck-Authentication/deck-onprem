@@ -2,9 +2,8 @@ import withGithubCredentials from "../../middlewares/withGithubCredentials"
 import withAuth from "../../middlewares/withAuth"
 import nc from "next-connect"
 import helmet from "helmet"
-import { listAllTeams } from "../../../../utils/github"
+import { listAllTeamRepos } from "../../../../utils/github"
 
-// list all activities in a Github organization
 const handler = nc({
   onError: (err, _, res, next) => {
     console.error(err.stack)
@@ -17,11 +16,14 @@ const handler = nc({
   .use(helmet())
   .get(async (req, res) => {
     const { apiKey, organization } = req
-    const teams = await listAllTeams({ apiKey, organization }).catch((err) =>
+
+    const { teamSlug } = req.query
+
+    const repos = await listAllTeamRepos({ apiKey, organization, teamSlug }).catch((err) =>
       res.status(500).json({ ok: false, message: err.message })
     )
 
-    return res.status(200).json({ ok: true, teams })
+    return res.status(200).json({ ok: true, repos })
   })
 
 export default withAuth(withGithubCredentials(handler))

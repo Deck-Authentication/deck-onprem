@@ -2,9 +2,9 @@ import withGithubCredentials from "../../middlewares/withGithubCredentials"
 import withAuth from "../../middlewares/withAuth"
 import nc from "next-connect"
 import helmet from "helmet"
-import { listAllTeams } from "../../../../utils/github"
+import { listAllTeamMembers } from "../../../../utils/github"
+import Admin from "../../../../database/admin"
 
-// list all activities in a Github organization
 const handler = nc({
   onError: (err, _, res, next) => {
     console.error(err.stack)
@@ -17,11 +17,17 @@ const handler = nc({
   .use(helmet())
   .get(async (req, res) => {
     const { apiKey, organization } = req
-    const teams = await listAllTeams({ apiKey, organization }).catch((err) =>
-      res.status(500).json({ ok: false, message: err.message })
-    )
+    const { email } = req.user
+    let admin = await Admin.findOne({ email }).catch((err) => res.status(500).json({ ok: false, message: err }))
+    const { teamSlug } = req.query
+    if (!admin.teams) return res.status(404).json({ ok: false, message: "No team found" })
 
-    return res.status(200).json({ ok: true, teams })
+    const members = await listAllTeamMembers({ apiKey, organization, teamSlug }).catch((error) => {
+      console.error(error)
+      next(error)
+    })
+
+    return res.status(200).json({ ok: true, members })
   })
 
 export default withAuth(withGithubCredentials(handler))

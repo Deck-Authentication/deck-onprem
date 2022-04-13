@@ -1,10 +1,11 @@
+// create a new team
+
 import withGithubCredentials from "../../middlewares/withGithubCredentials"
 import withAuth from "../../middlewares/withAuth"
 import nc from "next-connect"
 import helmet from "helmet"
-import { listAllTeams } from "../../../../utils/github"
+import { createTeam } from "../../../../utils/github"
 
-// list all activities in a Github organization
 const handler = nc({
   onError: (err, _, res, next) => {
     console.error(err.stack)
@@ -15,13 +16,19 @@ const handler = nc({
   },
 })
   .use(helmet())
-  .get(async (req, res) => {
+  .post(async (req, res) => {
     const { apiKey, organization } = req
-    const teams = await listAllTeams({ apiKey, organization }).catch((err) =>
-      res.status(500).json({ ok: false, message: err.message })
-    )
+    // team name can contain whitespaces
+    const { team } = req.body
+    let createTeamError
+    const newTeam = await createTeam({ apiKey, organization, teamName: team }).catch((error) => {
+      console.error(error)
+      createTeamError = error
+    })
 
-    return res.status(200).json({ ok: true, teams })
+    return createTeamError
+      ? res.status(500).json({ ok: false, error: createTeamError })
+      : res.status(200).json({ ok: true, team: newTeam })
   })
 
 export default withAuth(withGithubCredentials(handler))

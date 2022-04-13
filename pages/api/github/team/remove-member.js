@@ -1,10 +1,10 @@
+// remove members from a team
 import withGithubCredentials from "../../middlewares/withGithubCredentials"
 import withAuth from "../../middlewares/withAuth"
 import nc from "next-connect"
 import helmet from "helmet"
-import { listAllTeams } from "../../../../utils/github"
+import { removeMemberFromTeam } from "../../../../utils/github"
 
-// list all activities in a Github organization
 const handler = nc({
   onError: (err, _, res, next) => {
     console.error(err.stack)
@@ -15,13 +15,16 @@ const handler = nc({
   },
 })
   .use(helmet())
-  .get(async (req, res) => {
+  .delete(async (req, res) => {
     const { apiKey, organization } = req
-    const teams = await listAllTeams({ apiKey, organization }).catch((err) =>
-      res.status(500).json({ ok: false, message: err.message })
-    )
+    const { teamSlug, member } = req.body
 
-    return res.status(200).json({ ok: true, teams })
+    await removeMemberFromTeam({ apiKey, organization, teamSlug, member }).catch((error) => {
+      console.error(error)
+      next(error)
+    })
+
+    return res.status(200).json({ ok: true, message: `Successfully remove ${member} from ${teamSlug}` })
   })
 
 export default withAuth(withGithubCredentials(handler))

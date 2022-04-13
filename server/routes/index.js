@@ -1,11 +1,9 @@
 const express = require("express")
 const app = require("express").Router()
 const githubRouter = require("./github")
-const memberRouter = require("./member")
 const adminRouter = require("./admin")
 const Admin = require("./database/admin")
 const Sentry = require("@sentry/node")
-const Tracing = require("@sentry/tracing")
 const { getSession } = require("next-auth/react")
 
 Sentry.init({
