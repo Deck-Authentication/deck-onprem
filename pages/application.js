@@ -10,20 +10,19 @@ import { toast } from "react-toastify"
 import { toastOption } from "../constants"
 
 export default function Application() {
-  const { admin, loadAdminError } = useAdminData("api/admin/get-all-data")
-
-  if (loadAdminError) return <div>failed to load</div>
+  const { admin, loadAdminError } = useAdminData("backend/admin/get-all-data")
+  if (loadAdminError) {
+    return <div>failed to load</div>
+  }
   if (!admin) return <div>loading...</div>
-
   const { github } = admin
-
   const handleSave = async (newApiKey, newOrganization) => {
     // Only fetch new data as members and teams from github if the organization field has changed
     const shouldGithubDataUpdate = newOrganization !== github.organization
-    await Promise.all([saveGithubCredentials("api/github/save-credentials", newApiKey, newOrganization)])
+    await Promise.all([saveGithubCredentials("/backend/github/save-credentials", newApiKey, newOrganization)])
       .then(async () => {
         if (shouldGithubDataUpdate)
-          await importNewData("api/github/import-all").catch((err) => {
+          await importNewData("/backend/github/import-all").catch((err) => {
             throw new Error(err)
           })
         toast.success("Github credentials saved successfully", toastOption)
@@ -36,7 +35,6 @@ export default function Application() {
         )
       })
   }
-
   return (
     <div id="application" className="w-full h-full flex justify-center p-10">
       <ul className="w-10/12 w-md-full flex flex-col gap-y-4">

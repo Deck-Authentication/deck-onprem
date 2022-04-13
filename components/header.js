@@ -1,5 +1,4 @@
 import { Popover } from "@headlessui/react"
-import Spinner from "../components/spinner"
 import { useSession, signOut } from "next-auth/react"
 
 export default function Header() {
@@ -27,7 +26,13 @@ export default function Header() {
         </Popover.Button>
         <Popover.Panel className="absolute z-10 right-0 mt-2 bg-white border border-gray-300 p-1 w-52 rounded-xl">
           <ul tabIndex="0" className="p-2 rounded-box w-full">
-            <a href="#" onClick={(_) => signOut()}>
+            <a
+              href="#"
+              onClick={(event) => {
+                event.preventDefault()
+                signOut()
+              }}
+            >
               <li className="hover:bg-zinc-100 rounded-box p-2 rounded-xl">Log out</li>
             </a>
           </ul>

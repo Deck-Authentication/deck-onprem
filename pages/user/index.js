@@ -2,9 +2,9 @@ import { useGithubOrgMembers } from "../../utils"
 import Link from "next/link"
 import { useAdminData } from "../../utils"
 
-export default function User({ BACKEND_URL }) {
-  const { admin, loadAdminError } = useAdminData(`${BACKEND_URL}/admin/get-all-data`)
-  const { members, membersLoadingError } = useGithubOrgMembers(`${BACKEND_URL}/github/list-members`)
+export default function User() {
+  const { admin, loadAdminError } = useAdminData(`/backend/admin/get-all-data`)
+  const { members, membersLoadingError } = useGithubOrgMembers(`/backend/github/list-members`)
 
   if (loadAdminError)
     return (
@@ -57,14 +57,4 @@ export default function User({ BACKEND_URL }) {
       </table>
     </div>
   )
-}
-
-export async function getServerSideProps() {
-  const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080"
-
-  return {
-    props: {
-      BACKEND_URL,
-    },
-  }
 }

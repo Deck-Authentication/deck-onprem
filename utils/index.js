@@ -4,13 +4,7 @@ import axios from "axios"
 // list all members within a github organization
 export function useGithubOrgMembers(url = "") {
   const fetchMembers = async (_url) => {
-    return await axios
-      .get(_url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((res) => res.data.members)
+    return await axios.get(_url).then((res) => res.data.members)
   }
 
   const { data, error } = useSWR(url, fetchMembers)
@@ -23,7 +17,7 @@ export function useGithubOrgMembers(url = "") {
 
 export function useAdminData(url = "") {
   const fetcher = async (_url) => {
-    return await axios.get(`${_url}`, { headers: { Authorization: `Bearer ${accessToken}` } }).then((res) => res.data.admin)
+    return await axios.get(`${_url}`).then((res) => res.data.admin)
   }
 
   const { data, error } = useSWR(url, fetcher)
@@ -35,9 +29,7 @@ export function useAdminData(url = "") {
 }
 
 export async function saveGithubCredentials(url = "", apiKey = "", organization = "") {
-  const result = await axios
-    .post(url, { apiKey, organization }, { headers: { Authorization: `Bearer ${accessToken}` } })
-    .then((res) => res.data)
+  const result = await axios.post(url, { apiKey, organization }).then((res) => res.data)
 
   if (!result?.ok) throw new Error(result?.message)
 
@@ -45,7 +37,7 @@ export async function saveGithubCredentials(url = "", apiKey = "", organization 
 }
 
 export async function importNewData(url = "") {
-  const result = await axios.put(url, {}, { headers: { Authorization: `Bearer ${accessToken}` } }).then((res) => res.data)
+  const result = await axios.put(url).then((res) => res.data)
 
   if (!result?.ok) throw new Error(result?.message)
 
@@ -54,13 +46,7 @@ export async function importNewData(url = "") {
 
 export function useGithubTeams(url = "") {
   const fetchTeams = async (_url) => {
-    return await axios
-      .get(_url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((res) => res.data.teams)
+    return await axios.get(_url).then((res) => res.data.teams)
   }
 
   const { data, error } = useSWR(url, fetchTeams)
@@ -74,7 +60,7 @@ export function useGithubTeams(url = "") {
 // fetch all the repositories of a team from github
 export function useGithubTeamRepos(url = "") {
   const fetcher = async (url) => {
-    return await axios.get(`${url}`, { headers: { Authorization: `Bearer ${accessToken}` } }).then((res) => {
+    return await axios.get(`${url}`).then((res) => {
       if (!res.data.ok) throw new Error(res.data.message)
       return res.data.repos
     })
@@ -89,7 +75,7 @@ export function useGithubTeamRepos(url = "") {
 
 export function useGithubTeamMembers(url = "") {
   const fetcher = async (url) => {
-    return await axios.get(`${url}`, { headers: { Authorization: `Bearer ${accessToken}` } }).then((res) => {
+    return await axios.get(`${url}`).then((res) => {
       if (!res.data.ok) throw new Error(res.data.message)
       return res.data.members
     })
@@ -104,7 +90,7 @@ export function useGithubTeamMembers(url = "") {
 
 export function useGithubOrgActivities(url = "") {
   const fetcher = async (url) => {
-    return await axios.get(`${url}`, { headers: { Authorization: `Bearer ${accessToken}` } }).then((res) => res.data.activities)
+    return await axios.get(`${url}`).then((res) => res.data.activities)
   }
   const { data, error } = useSWR(url, fetcher, { refreshInterval: 500 })
 
@@ -115,18 +101,14 @@ export function useGithubOrgActivities(url = "") {
 }
 
 export async function createNewTeam(url = "", team) {
-  const result = await axios
-    .post(url, { team }, { headers: { Authorization: `Bearer ${accessToken}` } })
-    .then((res) => res.data)
+  const result = await axios.post(url, { team }).then((res) => res.data)
 
   if (!result?.ok) throw new Error(result?.error)
   return result.team
 }
 
 export async function deleteTeam(url = "", team) {
-  const result = await axios
-    .delete(url, { data: { teamSlug: team }, headers: { Authorization: `Bearer ${accessToken}` } })
-    .then((res) => res.data)
+  const result = await axios.delete(url, { data: { teamSlug: team } }).then((res) => res.data)
 
   if (!result?.ok) throw new Error(result?.error)
   return result
@@ -134,7 +116,7 @@ export async function deleteTeam(url = "", team) {
 
 export async function inviteMemberToTeam(url = "", teamSlug, memberAccount) {
   const result = await axios
-    .post(url, { teamSlug, member: memberAccount }, { headers: { Authorization: `Bearer ${accessToken}` } })
+    .post(url, { teamSlug, member: memberAccount })
     .then((res) => res.data)
     .catch((err) => {
       throw new Error(err)
@@ -146,7 +128,7 @@ export async function inviteMemberToTeam(url = "", teamSlug, memberAccount) {
 
 export async function removeMemberFromTeam(url = "", teamSlug, memberAccount) {
   const result = await axios
-    .delete(url, { data: { teamSlug, member: memberAccount }, headers: { Authorization: `Bearer ${accessToken}` } })
+    .delete(url, { data: { teamSlug, member: memberAccount } })
     .then((res) => res.data)
     .catch((err) => {
       throw new Error(err)
