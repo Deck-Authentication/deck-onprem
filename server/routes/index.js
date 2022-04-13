@@ -33,9 +33,7 @@ app.get("/", (_, res) => {
 const authenticateRequest = async (req, res, next) => {
   const session = await getSession({ req })
   if (session) {
-    console.log("session: ", session)
     const email = session.user.email
-    console.log("Email = ", email)
     let admin = await Admin.findOne({ email }).catch((err) => res.status(500).json({ ok: false, message: err.message }))
     if (!admin) {
       // if the user logs in for the first time, create a collection with the email field as provided by auth0
