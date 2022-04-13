@@ -4,8 +4,8 @@ import { useAdminData } from "../../utils"
 import Spinner from "../../components/spinner"
 
 export default function User() {
-  const { admin, loadAdminError } = useAdminData(`/api/backend/admin/get-all-data`)
-  const { members, membersLoadingError } = useGithubOrgMembers(`/api/backend/github/list-members`)
+  const { admin, loadAdminError } = useAdminData(`/api/admin/get-all-data`)
+  const { members, membersLoadingError } = useGithubOrgMembers(`/api/github/list-members`)
 
   if (loadAdminError)
     return (

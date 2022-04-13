@@ -17,8 +17,6 @@ app
 
     connectDB.call()
 
-    server.use("/api/backend", backendRouter)
-
     server.use(async (req, res) => {
       try {
         // Be sure to pass `true` as the second argument to `url.parse`.

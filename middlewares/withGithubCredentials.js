@@ -1,7 +1,7 @@
 import Admin from "../database/admin"
 
-export default async function withGithubCredentials(req, res) {
-  return async function (handler) {
+export default async function withGithubCredentials(handler) {
+  return async function (req, res) {
     const email = req.user.email
     let admin = await Admin.findOne({ email }).catch((err) => res.status(500).json({ ok: false, message: err }))
     const { github } = admin

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 
 const MemberSchema = new mongoose.Schema({
   name: {
@@ -80,6 +80,5 @@ const AdminSchema = new mongoose.Schema(
   { collection: "admins" }
 )
 
-const Admin = mongoose.model("Admin", AdminSchema)
-
-module.exports = Admin
+// export the admin model
+module.exports = mongoose.models.Admin || mongoose.model("Admin", AdminSchema)

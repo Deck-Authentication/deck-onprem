@@ -2,8 +2,8 @@ import { useGithubOrgActivities, useAdminData } from "../utils"
 import Spinner from "../components/spinner"
 
 export default function Activity() {
-  const { admin, loadAdminError } = useAdminData(`/api/backend/admin/get-all-data`)
-  const { activities, loadActivitiesError } = useGithubOrgActivities(`/api/backend/github/list-activities?perPage=100`)
+  const { admin, loadAdminError } = useAdminData(`/api/admin/get-all-data`)
+  const { activities, loadActivitiesError } = useGithubOrgActivities(`/api/github/list-activities?perPage=100`)
 
   if (loadAdminError)
     return (

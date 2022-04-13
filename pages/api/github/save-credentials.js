@@ -2,6 +2,7 @@ import nc from "next-connect"
 import helmet from "helmet"
 import Admin from "../../database/admin"
 import withAuth from "../../middlewares/withAuth"
+import withDatabase from "../../middlewares/withDatabase"
 
 const handler = nc({
   onError: (err, _, res, next) => {
@@ -29,4 +30,4 @@ const handler = nc({
     res.status(200).json({ ok: true, message: "Successfully saved Github credentials" })
   })
 
-export default withAuth(handler)
+export default withDatabase(withAuth(handler))

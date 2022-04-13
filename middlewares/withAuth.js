@@ -1,10 +1,9 @@
 import { getSession } from "next-auth/react"
 import Admin from "../database/admin"
-import withDatabase from "./withDatabase"
 import Sentry from "@sentry/node"
 
-async function withAuth(req, res) {
-  return async function (handler) {
+export default async function withAuth(handler) {
+  return async function (req, res) {
     const session = await getSession({ req })
     if (!session) return res.status(401).json({ ok: false, error: "Unauthorized" })
     else {
@@ -24,7 +23,7 @@ async function withAuth(req, res) {
 
       if (!admin) {
         // if the user logs in for the first time, create a collection with the email field as provided
-        Admin.create(
+        await Admin.create(
           {
             email: email,
             github: {
@@ -45,5 +44,3 @@ async function withAuth(req, res) {
     }
   }
 }
-
-export default withDatabase(withAuth)

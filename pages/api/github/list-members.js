@@ -1,5 +1,5 @@
-import withGithubCredentials from "../../middlewares/withGithubCredentials"
-import withAuth from "../../middlewares/withAuth"
+import withGithubCredentials from "../../../middlewares/withGithubCredentials.js"
+import withAuth from "../../../middlewares/withAuth"
 import nc from "next-connect"
 import helmet from "helmet"
 import { listAllTeams, listAllOrgMembers, listAllTeamMembersWithTeamSlug } from "../../../utils/github"

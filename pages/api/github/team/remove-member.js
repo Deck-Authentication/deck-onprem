@@ -1,6 +1,6 @@
 // remove members from a team
-import withGithubCredentials from "../../middlewares/withGithubCredentials"
-import withAuth from "../../middlewares/withAuth"
+import withGithubCredentials from "../../../../middlewares/withGithubCredentials"
+import withAuth from "../../../../middlewares/withAuth"
 import nc from "next-connect"
 import helmet from "helmet"
 import { removeMemberFromTeam } from "../../../../utils/github"
