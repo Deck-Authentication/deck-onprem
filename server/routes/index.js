@@ -68,7 +68,6 @@ const authenticateRequest = async (req, res, next) => {
 
 app.use("/admin", authenticateRequest, adminRouter)
 app.use("/github", authenticateRequest, githubRouter)
-app.use("/member", authenticateRequest, memberRouter)
 
 app.use((error, _, res, next) => {
   console.error(error)

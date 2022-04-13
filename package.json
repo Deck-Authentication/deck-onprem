@@ -2,9 +2,9 @@
   "name": "dashboard_v2",
   "private": true,
   "scripts": {
-    "dev": "nodemon server/index.js",
+    "dev": "next",
     "build": "next build",
-    "start": "NODE_ENV=production node server/index.js",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -27,6 +27,7 @@
     "mongoose": "^6.2.10",
     "next": "12.0.8",
     "next-auth": "^4.3.1",
+    "next-connect": "^0.12.2",
     "octokit": "^1.7.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
