@@ -17,7 +17,7 @@ app
 
     connectDB.call()
 
-    server.use("/backend", backendRouter)
+    server.use("/api/backend", backendRouter)
 
     server.use(async (req, res) => {
       try {

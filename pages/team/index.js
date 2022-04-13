@@ -8,8 +8,8 @@ import { toastOption } from "../../constants"
 import { useSWRConfig } from "swr"
 
 export default function Teams() {
-  const { teams, teamsLoadError } = useGithubTeams(`/backend/github/team/list-all`)
-  const { admin, loadAdminError } = useAdminData(`/backend/admin/get-all-data`)
+  const { teams, teamsLoadError } = useGithubTeams(`/api/backend/github/team/list-all`)
+  const { admin, loadAdminError } = useAdminData(`/api/backend/admin/get-all-data`)
   const [isCreatingTeam, setIsCreatingTeam] = useState(false)
   const [isDeletingTeam, setIsDeletingTeam] = useState(false)
   const { mutate } = useSWRConfig()
@@ -19,7 +19,7 @@ export default function Teams() {
   const handleCreateTeam = async (newTeamName) => {
     // disable the create team button while creating team
     setIsCreatingTeam(true)
-    const newTeam = await createNewTeam(`/backend/github/team/create`, newTeamName)
+    const newTeam = await createNewTeam(`/api/backend/github/team/create`, newTeamName)
     setIsCreatingTeam(false)
     // redirect users to the new team page
     router.push(`${router.asPath}/${newTeam.slug}`)
@@ -27,9 +27,9 @@ export default function Teams() {
 
   const handleDeleteTeam = async (team) => {
     setIsDeletingTeam(true)
-    await deleteTeam(`/backend/github/team/delete`, team.slug)
+    await deleteTeam(`/api/backend/github/team/delete`, team.slug)
     // refetch the updated list of teams
-    mutate(`/backend/github/team/list-all`)
+    mutate(`/api/backend/github/team/list-all`)
     setIsDeletingTeam(false)
     toast.success(`Team ${team.name} deleted successfully`, toastOption)
   }
@@ -58,7 +58,7 @@ export default function Teams() {
               cardKey={loopId}
               key={`${team.id}-${loopId}`}
               team={team}
-              BACKEND_URL={"/backend"}
+              BACKEND_URL={"/api/backend"}
               href={`${router.asPath}/${team.slug}`}
               handleDeleteTeam={handleDeleteTeam}
             />

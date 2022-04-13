@@ -8,7 +8,7 @@ export default function AppWrapper(props) {
 
   useEffect(() => {
     const getAccessToken = async () => {
-      const { accessToken } = await axios.get("/backend/get-access-token").then((res) => res.data)
+      const { accessToken } = await axios.get("/api/backend/get-access-token").then((res) => res.data)
 
       setContext({ ...context, accessToken })
     }

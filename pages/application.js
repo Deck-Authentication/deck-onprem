@@ -11,7 +11,7 @@ import { toastOption } from "../constants"
 import Spinner from "../components/spinner"
 
 export default function Application() {
-  const { admin, loadAdminError } = useAdminData("backend/admin/get-all-data")
+  const { admin, loadAdminError } = useAdminData("/api/backend/admin/get-all-data")
   if (loadAdminError) {
     return <div>failed to load</div>
   }
@@ -25,10 +25,10 @@ export default function Application() {
   const handleSave = async (newApiKey, newOrganization) => {
     // Only fetch new data as members and teams from github if the organization field has changed
     const shouldGithubDataUpdate = newOrganization !== github.organization
-    await Promise.all([saveGithubCredentials("/backend/github/save-credentials", newApiKey, newOrganization)])
+    await Promise.all([saveGithubCredentials("/api/backend/github/save-credentials", newApiKey, newOrganization)])
       .then(async () => {
         if (shouldGithubDataUpdate)
-          await importNewData("/backend/github/import-all").catch((err) => {
+          await importNewData("/api/backend/github/import-all").catch((err) => {
             throw new Error(err)
           })
         toast.success("Github credentials saved successfully", toastOption)
