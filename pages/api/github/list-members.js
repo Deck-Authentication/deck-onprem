@@ -1,8 +1,11 @@
-import withGithubCredentials from "../../../middlewares/withGithubCredentials.js"
-import withAuth from "../../../middlewares/withAuth"
+// list all the members in the github organization
+
 import nc from "next-connect"
 import helmet from "helmet"
 import { listAllTeams, listAllOrgMembers, listAllTeamMembersWithTeamSlug } from "../../../utils/github"
+import initiateDb from "../../../middlewares/initiateDb"
+import requireAuth from "../../../middlewares/requireAuth"
+import checkGithubCredentials from "../../../middlewares/checkGithubCredentials"
 
 const handler = nc({
   onError: (err, _, res, next) => {
@@ -15,8 +18,12 @@ const handler = nc({
 })
   .use(helmet())
   .get(async (req, res) => {
+    await initiateDb(process.env.MONGO_URI)
+    await requireAuth(req, res)
+    await checkGithubCredentials(req, res)
+
     // 1. get Github's apiKey and organization from the request
-    const { apiKey, organization } = req
+    const { apiKey, organization } = req.github
     // 2. get all users from the github organization
     let members = await listAllOrgMembers({ apiKey, organization }).catch((err) => next(err))
     // an object to look up the teams for organization members
@@ -45,4 +52,4 @@ const handler = nc({
     return res.status(200).json({ ok: true, members })
   })
 
-export default withAuth(withGithubCredentials(handler))
+export default handler

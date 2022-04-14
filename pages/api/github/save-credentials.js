@@ -1,8 +1,10 @@
+// save a new pair of Github apiKey & organization to the database
+
 import nc from "next-connect"
 import helmet from "helmet"
-import Admin from "../../database/admin"
-import withAuth from "../../middlewares/withAuth"
-import withDatabase from "../../middlewares/withDatabase"
+import Admin from "../../../database/admin"
+import initiateDb from "../../../middlewares/initiateDb"
+import requireAuth from "../../../middlewares/requireAuth"
 
 const handler = nc({
   onError: (err, _, res, next) => {
@@ -15,6 +17,9 @@ const handler = nc({
 })
   .use(helmet())
   .post(async (req, res) => {
+    await initiateDb(process.env.MONGODB_URI)
+    await requireAuth(req, res)
+
     const { apiKey, organization } = req.body
     const email = req.user.email
 
@@ -30,4 +35,4 @@ const handler = nc({
     res.status(200).json({ ok: true, message: "Successfully saved Github credentials" })
   })
 
-export default withDatabase(withAuth(handler))
+export default handler

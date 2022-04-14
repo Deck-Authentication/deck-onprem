@@ -8,11 +8,11 @@ import { useSWRConfig } from "swr"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons"
 
-export default function Team({ id, BACKEND_URL }) {
+export default function Team({ id }) {
   const teamSlug = id
   const router = useRouter()
-  const { repos, loadReposError } = useGithubTeamRepos(`${BACKEND_URL}/github/team/list-repos?teamSlug=${teamSlug}`)
-  const { members, loadMembersError } = useGithubTeamMembers(`${BACKEND_URL}/github/team/list-members?teamSlug=${teamSlug}`)
+  const { repos, loadReposError } = useGithubTeamRepos(`/api/github/team/list-repos?teamSlug=${teamSlug}`)
+  const { members, loadMembersError } = useGithubTeamMembers(`/api/github/team/list-members?teamSlug=${teamSlug}`)
   const [tab, setTab] = useState(router.query.tab || "repositories")
 
   if (loadReposError) return <div>Failed to load repos</div>
@@ -38,13 +38,18 @@ export default function Team({ id, BACKEND_URL }) {
           </a>
         ))}
       </div>
-      {tab === "repositories" ? (
-        <TeamRepos repos={repos} />
-      ) : (
-        <TeamMembers members={members} teamSlug={id} BACKEND_URL={BACKEND_URL} />
-      )}
+      {tab === "repositories" ? <TeamRepos repos={repos} /> : <TeamMembers members={members} teamSlug={id} />}
     </div>
   )
+}
+
+export async function getServerSideProps({ params }) {
+  const id = params.id
+  return {
+    props: {
+      id,
+    },
+  }
 }
 
 function TeamRepos({ repos }) {
@@ -68,7 +73,7 @@ function TeamRepos({ repos }) {
   )
 }
 
-function TeamMembers({ members, teamSlug, BACKEND_URL }) {
+function TeamMembers({ members, teamSlug }) {
   const [isCreating, setIsCreating] = useState(false)
   const { mutate } = useSWRConfig()
 
@@ -76,10 +81,10 @@ function TeamMembers({ members, teamSlug, BACKEND_URL }) {
     // avoid inviting empty-string members
     if (!memberAccount) return
     setIsCreating(true)
-    const response = await inviteMemberToTeam(`${BACKEND_URL}/github/team/invite-member`, teamSlug, memberAccount)
+    const response = await inviteMemberToTeam(`/api/github/team/invite-member`, teamSlug, memberAccount)
     if (response.ok) {
       // reload the cache after adding a new member
-      mutate(`${BACKEND_URL}/github/team/list-members?teamSlug=${teamSlug}`)
+      mutate(`/api/github/team/list-members?teamSlug=${teamSlug}`)
       toast.success("Member added", toastOption)
     } else toast.error(`Error in adding ${memberAccount}`, toastOption)
     setIsCreating(false)
@@ -89,9 +94,9 @@ function TeamMembers({ members, teamSlug, BACKEND_URL }) {
     // avoid removing empty-string members
     if (!memberAccount) return
     try {
-      await removeMemberFromTeam(`${BACKEND_URL}/github/team/remove-member`, teamSlug, memberAccount)
+      await removeMemberFromTeam(`/api/github/team/remove-member`, teamSlug, memberAccount)
       // reload the cache after adding a new member
-      mutate(`${BACKEND_URL}/github/team/list-members?teamSlug=${teamSlug}`)
+      mutate(`/api/github/team/list-members?teamSlug=${teamSlug}`)
       toast.success(`${memberAccount} is successfully removed from your team`, toastOption)
     } catch (error) {
       toast.error(`Error in removing ${memberAccount}`, toastOption)
@@ -176,15 +181,4 @@ function AddMemberBtn({ isCreating, handleMemberAdd }) {
       </div>
     </div>
   )
-}
-
-export async function getServerSideProps({ params }) {
-  const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8080"
-  const id = params.id
-  return {
-    props: {
-      id,
-      BACKEND_URL,
-    },
-  }
 }

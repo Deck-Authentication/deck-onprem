@@ -3,7 +3,7 @@ import { XCircleIcon } from "@heroicons/react/solid"
 import { useState } from "react"
 import { useGithubTeamRepos, useGithubTeamMembers } from "../../utils"
 
-export function TeamCard({ team, cardKey, BACKEND_URL, href, handleDeleteTeam }) {
+export function TeamCard({ team, cardKey, href, handleDeleteTeam }) {
   const { name, slug } = team
   const borderTopColors = [
     "border-t-blue-300",
@@ -16,8 +16,8 @@ export function TeamCard({ team, cardKey, BACKEND_URL, href, handleDeleteTeam })
   const cardBorderTopColor = borderTopColors[cardKey % 6]
   const TeamCardStyles = `defined-card relative w-1/5 min-w-max h-36 mt-2 mr-2 bg-white cursor-pointer hover:shadow-lg border-gray-100 border-t-8 ${cardBorderTopColor}`
 
-  const { repos, loadReposError } = useGithubTeamRepos(`${BACKEND_URL}/github/team/list-repos?teamSlug=${slug}`)
-  const { members, loadMembersError } = useGithubTeamMembers(`${BACKEND_URL}/github/team/list-members?teamSlug=${slug}`)
+  const { repos, loadReposError } = useGithubTeamRepos(`/api/github/team/list-repos?teamSlug=${slug}`)
+  const { members, loadMembersError } = useGithubTeamMembers(`/api/github/team/list-members?teamSlug=${slug}`)
 
   if (loadReposError) return <div>Failed to load repos</div>
   else if (loadMembersError) return <div>Failed to load team members</div>

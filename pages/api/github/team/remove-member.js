@@ -1,9 +1,11 @@
 // remove members from a team
-import withGithubCredentials from "../../../../middlewares/withGithubCredentials"
-import withAuth from "../../../../middlewares/withAuth"
+
 import nc from "next-connect"
 import helmet from "helmet"
 import { removeMemberFromTeam } from "../../../../utils/github"
+import initiateDb from "../../../../middlewares/initiateDb"
+import requireAuth from "../../../../middlewares/requireAuth"
+import checkGithubCredentials from "../../../../middlewares/checkGithubCredentials"
 
 const handler = nc({
   onError: (err, _, res, next) => {
@@ -16,7 +18,11 @@ const handler = nc({
 })
   .use(helmet())
   .delete(async (req, res) => {
-    const { apiKey, organization } = req
+    await initiateDb(process.env.MONGO_URI)
+    await requireAuth(req, res)
+    await checkGithubCredentials(req, res)
+
+    const { apiKey, organization } = req.github
     const { teamSlug, member } = req.body
 
     await removeMemberFromTeam({ apiKey, organization, teamSlug, member }).catch((error) => {
@@ -27,4 +33,4 @@ const handler = nc({
     return res.status(200).json({ ok: true, message: `Successfully remove ${member} from ${teamSlug}` })
   })
 
-export default withAuth(withGithubCredentials(handler))
+export default handler

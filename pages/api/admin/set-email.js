@@ -1,7 +1,8 @@
 import nc from "next-connect"
 import helmet from "helmet"
 import Admin from "../../database/admin"
-import withAuth from "../../middlewares/withAuth"
+import initiateDb from "../../middlewares/initiateDb"
+import requireAuth from "../../middlewares/requireAuth"
 
 const handler = nc({
   onError: (err, _, res, next) => {
@@ -14,10 +15,14 @@ const handler = nc({
 })
   .use(helmet())
   .put(async (req, res) => {
-    const { email } = req.body
+    await initiateDb(process.env.MONGO_URI)
+    await requireAuth(req, res)
+    const newEmail = req.body.email
     const oldEmail = req.user.email
-    await Admin.findOneAndUpdate({ email: oldEmail }, { email }).catch((err) => res.status(500).json({ ok: false, err }))
+    await Admin.findOneAndUpdate({ email: oldEmail }, { email: newEmail }).catch((err) =>
+      res.status(500).json({ ok: false, err })
+    )
     res.status(200).json({ ok: true, message: "Admin email updated" })
   })
 
-export default withAuth(handler)
+export default handler

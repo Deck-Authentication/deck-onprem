@@ -22,7 +22,7 @@ export default function Teams() {
     const newTeam = await createNewTeam(`/api/github/team/create`, newTeamName)
     setIsCreatingTeam(false)
     // redirect users to the new team page
-    router.push(`${router.asPath}/${newTeam.slug}`)
+    router.push(`${router.asPath}/${newTeamName}`)
   }
 
   const handleDeleteTeam = async (team) => {
@@ -58,7 +58,6 @@ export default function Teams() {
               cardKey={loopId}
               key={`${team.id}-${loopId}`}
               team={team}
-              BACKEND_URL={"/api"}
               href={`${router.asPath}/${team.slug}`}
               handleDeleteTeam={handleDeleteTeam}
             />

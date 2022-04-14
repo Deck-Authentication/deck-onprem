@@ -1,10 +1,11 @@
-// create a new team
+// create a new team in a Github organization
 
-import withGithubCredentials from "../../middlewares/withGithubCredentials"
-import withAuth from "../../middlewares/withAuth"
 import nc from "next-connect"
 import helmet from "helmet"
 import { createTeam } from "../../../../utils/github"
+import initiateDb from "../../../../middlewares/initiateDb"
+import requireAuth from "../../../../middlewares/requireAuth"
+import checkGithubCredentials from "../../../../middlewares/checkGithubCredentials"
 
 const handler = nc({
   onError: (err, _, res, next) => {
@@ -17,7 +18,10 @@ const handler = nc({
 })
   .use(helmet())
   .post(async (req, res) => {
-    const { apiKey, organization } = req
+    await initiateDb(process.env.MONGO_URI)
+    await requireAuth(req, res)
+    await checkGithubCredentials(req, res)
+    const { apiKey, organization } = req.github
     // team name can contain whitespaces
     const { team } = req.body
     let createTeamError
@@ -31,4 +35,4 @@ const handler = nc({
       : res.status(200).json({ ok: true, team: newTeam })
   })
 
-export default withAuth(withGithubCredentials(handler))
+export default handler
