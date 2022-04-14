@@ -1,8 +1,8 @@
 import nc from "next-connect"
 import helmet from "helmet"
-import Admin from "../../database/admin"
-import initiateDb from "../../middlewares/initiateDb"
-import requireAuth from "../../middlewares/requireAuth"
+import Admin from "../../../database/admin"
+import initiateDb from "../../../middlewares/initiateDb"
+import requireAuth from "../../../middlewares/requireAuth"
 
 const handler = nc({
   onError: (err, _, res, next) => {
